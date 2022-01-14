@@ -4,4 +4,3 @@ Flask-Session
 requests
 psycopg2
 gunicorn
-redis==4.1.0
