@@ -6,8 +6,12 @@ from flask_session import Session
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
 
 from helpers import apology, login_required, lookup, usd
+
+# Get datetime
+date = datetime.now()
 
 # Configure application
 app = Flask(__name__)
@@ -92,8 +96,8 @@ def buy():
         else:
             db.execute("UPDATE users SET cash = cash - ? WHERE id = ?",
                        shares*price, session['user_id'])
-            db.execute("INSERT INTO transact(user_id, symbol, shares, price, time) VALUES(?, ?, ?, ?, datetime()) ",
-                       session['user_id'], symbol, shares, price)
+            db.execute("INSERT INTO transact(user_id, symbol, shares, price, time) VALUES(?, ?, ?, ?, ?) ",
+                       session['user_id'], symbol, shares, price, date)
     return redirect("/")
 
 
@@ -218,8 +222,8 @@ def sell():
         if shares > owned:
             return apology("YOU DON'T HAVE THAT MANY SHARES")
         else:
-            db.execute('INSERT INTO transact(user_id, symbol,  shares, price, time) VALUES(?, ?, ?, ?, datetime())',
-                       session['user_id'], symbol, -shares, price)
+            db.execute('INSERT INTO transact(user_id, symbol,  shares, price, time) VALUES(?, ?, ?, ?, ?)',
+                       session['user_id'], symbol, -shares, price, date)
             db.execute('UPDATE users SET cash = cash + ? WHERE id = ?',
                        money, session['user_id'])
     return redirect('/')
