@@ -7,8 +7,13 @@ from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
 from datetime import datetime
+import redis
 
 from helpers import apology, login_required, lookup, usd
+
+# Configuring redis
+redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+redis = redis.from_url(redis_url)
 
 # Get datetime
 date = datetime.now()
